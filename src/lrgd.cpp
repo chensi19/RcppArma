@@ -7,13 +7,15 @@ using namespace arma;
 arma::mat grad_desc(arma::vec Y, arma::mat X, double step, int dim, int itr, int n1, int n2, arma::vec& Qtrace){
   arma::mat beta_trace(dim,itr);
   arma::vec beta(dim);
+  arma::mat a1(1,1);
+  arma::vec y_x_beta(dim);
   for (int i=0; i<itr;i++){
-    arma::mat a = (((Y-X*beta).st())*(Y-X*beta));
-    Qtrace(i)=a(0,0);
-    beta=beta-(step*(-2*X.st()*(Y-X*beta)));
+    y_x_beta = Y-X*beta;
+    a1 = ((y_x_beta.st())*y_x_beta);
+    Qtrace(i)=a1(0,0);
+    beta=beta-(step*(-2*X.st()*y_x_beta));
     beta_trace.col(i)=beta;
   }
-
   return beta_trace.cols(n1,n2);
 }
 
